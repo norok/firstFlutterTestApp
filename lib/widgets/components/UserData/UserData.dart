@@ -15,6 +15,7 @@ class UserData extends StatefulWidget {
 
 class _UserDataState extends State<UserData> {
   final int id;
+  bool _expanded = false;
 
   _UserDataState(this.id);
 
@@ -27,17 +28,40 @@ class _UserDataState extends State<UserData> {
         if (snapshot.hasData) {
           User userData = snapshot.data;
 
-          return Column(
+          return ExpansionPanelList(
+            expansionCallback: (int index, bool isExpanded) {
+              setState(() {
+                _expanded = !_expanded;
+              });
+            },
             children: [
-              Text("Album User"),
-              FadeInImage.memoryNetwork(
-                placeholder: kTransparentImage,
-                image: "https://picsum.photos/250?image=${userData.id}",
-                height: 250,
+              ExpansionPanel(
+                headerBuilder: (context, isExpanded) => ListTile(
+                  title: Text('Album Owner'),
+                ),
+                isExpanded: _expanded,
+                body: Column(
+                  children: [
+                    FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: "https://picsum.photos/250?image=${userData.id}",
+                      height: 250,
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text("Name: ${userData.name}"),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text("Username: ${userData.username}"),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text("Email: ${userData.email}"),
+                    ),
+                  ],
+                ),
               ),
-              Text("Name: ${userData.name}"),
-              Text("Email: ${userData.email}"),
-              Text("Username: ${userData.username}"),
             ],
           );
         }
